@@ -34,6 +34,12 @@ RUN set -x \
     && wget -nv http://download.microsoft.com/download/7/9/6/796EF2E4-801B-4FC4-AB28-B59FBF6D907B/VCForPython27.msi \
     && wine msiexec /qn /a VCForPython27.msi \
     && rm VCForPython27.msi \
+    && apt install Xvfb \
+    && (wget -nv http://download.microsoft.com/download/1/1/1/1116b75a-9ec3-481a-a3c8-1777b5381140/vcredist_x86.exe) \
+    && (Xvfb :1 &) \
+    && sleep 1 \
+    && DISPLAY=:1 wine vcredist_x86.exe /q
+    && pkill Xvfb \
     && sed -i 's/_windows_cert_stores = .*/_windows_cert_stores = ("ROOT",)/' "/wine/drive_c/Python27/Lib/ssl.py" \
     && echo 'wine '\''C:\Python27\python.exe'\'' "$@"' > /usr/bin/python \
     && echo 'wine '\''C:\Python27\Scripts\easy_install.exe'\'' "$@"' > /usr/bin/easy_install \
